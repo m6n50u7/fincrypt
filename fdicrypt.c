@@ -1,5 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+int mod(int a, int b)
+{
+	int c = a % b;
+	if(c < 0)
+		c += b;
+	return c;
+}
 void buffdecrypt(signed char* pass)
 {
 	int buff, i = 0, ms = 0, ks;
@@ -19,16 +26,16 @@ void buffdecrypt(signed char* pass)
 	char cache;
 	for(i = ms - 1; i >= 0; i--)
 	{
-		cache = buffer[(i + pass[i % ks]) % ms];
+		cache = buffer[mod(i + pass[i % ks], ms)];
 		if(pass[i % ks] < 0)
 		{
 			for(int j = pass[i % ks]; j < 0; j++)
-				buffer[(i + j) % ms] = buffer[(i + j + 1) % ms];
+				buffer[mod(i + j, ms)] = buffer[mod(i + j + 1, ms)];
 		}
 		else
 		{
 			for(int j = pass[i % ks]; j > 0; j--)
-				buffer[(i + j) % ms] = buffer[(i + j - 1) % ms];
+				buffer[mod(i + j, ms)] = buffer[mod(i + j - 1, ms)];
 		}
 		buffer[i % ms] = cache;
 	}
